@@ -16,8 +16,13 @@ export default {
     return axios.delete("/api/books/" + id);
   },
   // Saves a book to the database
-  saveBook: function(bookData) {
-    return axios.post("/api/books", bookData);
+    saveBook: function (bookId) {
+       return this.searchBook(bookId)
+       
+    },
+    searchBook: function (bookId) {
+        const endpoint = 'https://www.googleapis.com/books/v1/volumes/' + bookId + '?key=' + apiKey
+        return axios.get(endpoint)
     },
   searchBooks: function (params) {
       let url = endPoint + params.query + "&maxResults=" + params.maxResults + "&startIndex=" + params.startIndex + "&key=" + apiKey

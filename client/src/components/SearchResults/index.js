@@ -5,14 +5,18 @@ import React from "react";
 
 export default function SearchResults(props) {
 
+    console.log(props.saveBookClick)
     return (
         <div className="card-group">
-      <div className="row mt-4">
+            <div className="row mt-4">
          
-              {props.books.map( book => {
+                {props.books.map(book => {
+
                   return (
 
-                      <div className="card shadow mb-2 col-3"> 
+                      <div className="card shadow mb-2 col-3"
+                          key={book.id}
+                      > 
                         
                           {book.volumeInfo.imageLinks ? (
                               <div className="card-img">
@@ -33,11 +37,11 @@ export default function SearchResults(props) {
                               }
                                   
                           </div>
-                                <div class="card-footer">
-                                    <button className="card-link">More Info...</button>
-                                    <button className="card-link">Save Book</button>
+                                <div className="card-footer">
+                              <a href={book.selfLink} className="card-link btn">More Info...</a>
+                              <button data-bookid={book.id} onClick={props.saveBookClick} className="card-link btn">Save Book</button>
                               </div>
-                              </div>
+                      </div>
                          
                      
                   )

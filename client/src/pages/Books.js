@@ -8,6 +8,7 @@ import { List, ListItem } from "../components/List";
 import { Input, TextArea, FormBtn } from "../components/Form";
 import Pagenation from "../components/Pagenation";
 import SearchResults from "../components/SearchResults";
+import axios from "axios";
 
 class Books extends Component {
   state = {
@@ -18,7 +19,8 @@ class Books extends Component {
       googleBooks: [],
       startIndex: 0,
       maxResults: 8,
-      totalItems: 0
+      totalItems: 0,
+      thisPage: 1
   };
 
   componentDidMount() {
@@ -45,7 +47,26 @@ class Books extends Component {
     API.deleteBook(id)
       .then(res => this.loadBooks())
       .catch(err => console.log(err));
-  };
+    };
+
+
+    saveBookClick = event => {
+
+        let bookId = event.target.getAttribute("data-bookid")
+        API.saveBook(bookId).then(res => {
+            let bookData = res.data 
+            console.log(bookData)
+            let book = {
+                title: bookData.volumeInfo.title,
+                author: bookData.volumeInfo.authors[0],
+                link: bookData.selfLink,
+                image: bookData.volumeInfo.imageLinks.smallThumbnail
+            }
+            console.log(book)
+            axios.post("/api/books", book).then(res => { alert("Book Saved") }).catch(err => console.log(err))
+
+        }).catch(err => console.log(err));
+    }
 
   handleInputChange = event => {
     const { name, value } = event.target;
@@ -58,15 +79,22 @@ class Books extends Component {
       event.preventDefault();
       
       if (this.state.title) {
-          let newStartIndex = event.target.getAttribute("data-index");
-          if (parseInt(newStartIndex) > 0) {
-              this.setState({ startIndex: newStartIndex }, this.search)
-          } else {
-              this.search()
-          }
+          this.search()
+      }
         
     }
-  };
+   
+
+    clickButton = event => {
+
+        let newStartIndex = parseInt(event.target.getAttribute("data-index")) + parseInt(this.state.maxResults);
+        if (parseInt(newStartIndex) > 0) {
+            this.setState({ startIndex: newStartIndex }, this.search)
+        } 
+
+
+    }
+
 
     search = () => {
         API.searchBooks({ query: this.state.title, maxResults: this.state.maxResults, startIndex: this.state.startIndex }).then(
@@ -80,21 +108,30 @@ class Books extends Component {
         let nextPage = 0;
         let prevPage = 0;
         let thisPage = 0;
-        let totalPages = 0;
+        let totalPages = 1;
         let mr = parseInt(this.state.maxResults)
         
         if (parseInt(this.state.totalItems) > parseInt(this.state.maxResults)) {
-            thisPage = parseInt(this.state.startIndex)
+
+
+           
             totalPages = parseInt(parseInt(this.state.totalItems) / parseInt(this.state.maxResults))
-            if (!this.state.totalItems % this.state.maxResults) {
+            if (this.state.totalItems % this.state.maxResults) {
                 totalPages++
             }
+            console.log("total pages: " + totalPages)
+            console.log("total Items: " + parseInt(this.state.totalItems))
+            console.log("total index: " + parseInt(this.state.startIndex))
+            console.log("total perpage: " + mr)
+            thisPage = parseInt(thisPage = (totalPages - Math.abs((parseInt(this.state.totalItems) - parseInt(this.state.startIndex)) / mr)+1))
+            console.log("this page: " + thisPage)
+            
             if ((totalPages - thisPage) > 0 && ((thisPage + mr) <= totalPages)) {
-                nextPage = thisPage + mr
+                nextPage = thisPage + 1
                 showNextPage = true
             }
             if ((thisPage) > mr) {
-                prevPage = thisPage - mr
+                prevPage = thisPage - 1
                 showPrevPage = true
             }
 
@@ -128,7 +165,8 @@ class Books extends Component {
                         {this.state.googleBooks.length > 0 ? (
                             <div>
                                 <SearchResults
-                                books={this.state.googleBooks}
+                                    books={this.state.googleBooks}
+                                    saveBookClick={this.saveBookClick}
                             >
                             </SearchResults>
                             <Pagenation
@@ -140,7 +178,8 @@ class Books extends Component {
                                     totalPages={totalPages}
                                     maxResults={mr}
                                 startIndex={this.state.startIndex}
-                                clickButtonHandlers={this.handleFormSubmit}
+                                    clickButtonHandlers={this.clickButton}
+                                    
                             >
                          
                                 </Pagenation>

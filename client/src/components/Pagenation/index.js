@@ -6,7 +6,8 @@ export default function Pagenation(props) {
 
     let next = parseInt(props.nextPage) 
     let prev = parseInt(props.prevPage) 
-
+    console.log("Next Page: " + next)
+    console.log("Prev Page: " + prev)
     return (
       <nav aria-label="Page navigation">
           <ul className="pagination">
