@@ -7,16 +7,7 @@ import Pagination from "../components/Pagination";
 import SearchResults from "../components/SearchResults";
 import axios from "axios";
 import Modal from 'react-modal';
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)'
-    }
-};
+
 
 Modal.setAppElement('#root')
 class Books extends Component {
@@ -32,6 +23,7 @@ class Books extends Component {
         totalItems: 0,
         thisPage: 1,
         modalTitle: "Book Information",
+        subtitle: "Saved",
         modalMessage: "Book was saved"
 
     };
@@ -39,11 +31,7 @@ class Books extends Component {
     constructor(props) {
 
         super(props)
-        this.state = {
-            modalIsOpen: false
-        };
-
-
+        this.state.modalIsOpen = false
 
 
     }
@@ -51,10 +39,6 @@ class Books extends Component {
         this.setState({ modalIsOpen: true });
     }
 
-    afterOpenModal = () => {
-
-        this.subtitle.style.color = '#f00';
-    }
 
     closeModal = () => {
         this.setState({ modalIsOpen: false });
@@ -176,38 +160,38 @@ class Books extends Component {
         }
         return (
             <div>
-            <Container fluid>
-                <Row>
-                    <Col size="md-12">
-                        <Jumbotron>
-                            <h1>Search Google Books?</h1>
-                        </Jumbotron>
-                    </Col>
-                </Row>
-            </Container>
-            <Container fluid>
-                <Row>
-                    <Col size="md-12">
-
-                        <form>
-                            <div className="form-row align-items-center">
-                                <Input
-                                    value={this.state.title}
-                                    onChange={this.handleInputChange}
-                                    name="title"
-                                    placeholder="Title (required)"
-                                />
-                                <FormBtn
-                                    disabled={!(this.state.title)}
-                                    onClick={this.handleFormSubmit}
-                                >
-                                    Search
-              </FormBtn>
-                            </div>
-                        </form>
+                <Container fluid>
+                    <Row>
+                        <Col size="md-12">
+                            <Jumbotron>
+                                <h1>Search Google Books?</h1>
+                            </Jumbotron>
                         </Col>
                     </Row>
-                        <Row>
+                </Container>
+                <Container fluid>
+                    <Row>
+                        <Col size="md-12">
+
+                            <form>
+                                <div className="form-row align-items-center">
+                                    <Input
+                                        value={this.state.title}
+                                        onChange={this.handleInputChange}
+                                        name="title"
+                                        placeholder="Title (required)"
+                                    />
+                                    <FormBtn
+                                        disabled={!(this.state.title)}
+                                        onClick={this.handleFormSubmit}
+                                    >
+                                        Search
+              </FormBtn>
+                                </div>
+                            </form>
+                        </Col>
+                    </Row>
+                    <Row>
                         <Col size="md-12">
                             {(this.state.googleBooks && this.state.googleBooks) ? (
                                 <div>
@@ -240,18 +224,29 @@ class Books extends Component {
 
                 </Container>
                 <div>
-                <Modal
-                    isOpen={this.state.modalIsOpen}
-                    onAfterOpen={this.afterOpenModal}
-                    onRequestClose={this.closeModal}
-                    style={customStyles}
-                    contentLabel={this.state.modalTitle}
-                >
-                    <h2>{this.state.modalTitle}</h2>
-                    <div>{this.state.modalMessage}</div>
-                    <button onClick={this.closeModal}>close</button>
+                    <Modal
+                        isOpen={this.state.modalIsOpen}
+                        onAfterOpen={this.afterOpenModal}
+                        onRequestClose={this.closeModal}
+                        style={{
+                            content: {
+                                top: "50%",
+                                left: "50%",
+                                right: "50%",
+                                bottom: "25%",
+                                backgroundColor: "rgb(9,09,9)",
+                                color: "white",
+                                marginRight: "-50%",
+                                transform: "translate(-50%, -50%)"
+                            }
+                        }}
+                        contentLabel={this.state.modalTitle}
+                    >
+                        <h2>{this.state.modalTitle}</h2>
+                        <div>{this.state.modalMessage}</div>
+                        <button className="btn btn-light float-right" onClick={this.closeModal}>close</button>
                     </Modal>
-               </div>
+                </div>
             </div>
         );
     }

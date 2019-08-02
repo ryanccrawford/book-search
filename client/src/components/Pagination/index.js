@@ -9,8 +9,8 @@ export default function Pagination(props) {
     console.log("Next Page: " + next)
     console.log("Prev Page: " + prev)
     return (
-      <nav aria-label="Page navigation">
-          <ul className="pagination">
+        <nav aria-label="Page navigation">
+            <ul className="pagination">
                 {props.showPrevPage ? (
                     <li className="page-item">
                         <a
@@ -21,7 +21,7 @@ export default function Pagination(props) {
                     </li>) : null
                 }
                 <li className="page-item active" aria-current="page">
-                    <span className="page-link"> Current Page: {parseInt(props.thisPage) } </span>
+                    <span className="page-link"> Current Page: {parseInt(props.thisPage)} </span>
                 </li>
                 {props.showNextPage ? (
                     <li className="page-item"><a
@@ -30,9 +30,9 @@ export default function Pagination(props) {
                         onClick={props.clickButtonHandlers}
                     >Next</a></li>) : null
                 }
-          </ul>
-      </nav>
-  );
+            </ul>
+        </nav>
+    );
 }
 
 
