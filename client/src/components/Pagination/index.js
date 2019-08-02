@@ -2,10 +2,10 @@ import React from "react";
 
 
 
-export default function Pagenation(props) {
+export default function Pagination(props) {
 
-    let next = parseInt(props.nextPage) 
-    let prev = parseInt(props.prevPage) 
+    let next = parseInt(props.nextPage)
+    let prev = parseInt(props.prevPage)
     console.log("Next Page: " + next)
     console.log("Prev Page: " + prev)
     return (
@@ -19,7 +19,7 @@ export default function Pagenation(props) {
                             onClick={props.clickButtonHandlers}
                         >Previous</a>
                     </li>) : null
-                } 
+                }
                 <li className="page-item active" aria-current="page">
                     <span className="page-link"> Current Page: {parseInt(props.thisPage) } </span>
                 </li>

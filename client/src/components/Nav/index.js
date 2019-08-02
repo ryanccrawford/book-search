@@ -9,7 +9,9 @@ function Nav(props) {
           <ul className="navbar-nav mr-auto mt-2 mt-lg-0 float-right">
           {props.menuItems.map((menuItem, index) => {
               return (
-                  <li className={"nav-item"}>
+                  <li className={"nav-item"}
+                      key={menuItem.name}
+                  >
                       <a className="nav-link" href={menuItem.href}>
                           {menuItem.name}
                       </a>
