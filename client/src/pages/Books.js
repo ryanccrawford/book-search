@@ -6,10 +6,23 @@ import { Input, FormBtn } from "../components/Form";
 import Pagination from "../components/Pagination";
 import SearchResults from "../components/SearchResults";
 import axios from "axios";
+import Modal from 'react-modal';
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)'
+    }
+};
 
+Modal.setAppElement('#root')
 class Books extends Component {
     state = {
         books: [],
+        savedBookTitles: [],
         title: "",
         author: "",
         synopsis: "",
@@ -17,12 +30,43 @@ class Books extends Component {
         startIndex: 0,
         maxResults: 8,
         totalItems: 0,
-        thisPage: 1
+        thisPage: 1,
+        modalTitle: "Book Information",
+        modalMessage: "Book was saved"
+
     };
 
-    //componentDidMount() {
-    //
-    //}
+    constructor(props) {
+
+        super(props)
+        this.state = {
+            modalIsOpen: false
+        };
+
+
+
+
+    }
+    openModal = () => {
+        this.setState({ modalIsOpen: true });
+    }
+
+    afterOpenModal = () => {
+
+        this.subtitle.style.color = '#f00';
+    }
+
+    closeModal = () => {
+        this.setState({ modalIsOpen: false });
+    }
+
+
+    componentDidMount() {
+
+        //
+
+    }
+
 
     showBooks = (googleBooks) => {
         console.log(googleBooks)
@@ -32,27 +76,31 @@ class Books extends Component {
         this.setState({ googleBooks: books, totalItems: totalItems })
     };
 
-    deleteBook = id => {
-        API.deleteBook(id)
-            .then(res => this.loadBooks())
-            .catch(err => console.log(err));
-    };
-
 
     saveBookClick = event => {
 
         let bookId = event.target.getAttribute("data-bookid")
         API.saveBook(bookId).then(res => {
             let bookData = res.data
-            console.log(bookData)
+
             let book = {
                 title: bookData.volumeInfo.title,
                 author: bookData.volumeInfo.authors[0],
                 link: bookData.volumeInfo.canonicalVolumeLink,
                 image: bookData.volumeInfo.imageLinks.smallThumbnail
             }
-            console.log(book)
-            axios.post("/api/books", book).then(res => { alert("Book Saved") }).catch(err => console.log(err))
+
+
+            axios.post("/api/books", book).then(res => {
+                console.log("Inside save Click")
+                console.log(res.data.title)
+                this.setState({
+                    savedBookTitles: [...this.state.savedBookTitles, res.data.title]
+                }, this.openModal)
+
+
+
+            }).catch(err => console.log(err))
 
         }).catch(err => console.log(err));
     }
@@ -127,12 +175,20 @@ class Books extends Component {
 
         }
         return (
+            <div>
             <Container fluid>
                 <Row>
                     <Col size="md-12">
                         <Jumbotron>
                             <h1>Search Google Books?</h1>
                         </Jumbotron>
+                    </Col>
+                </Row>
+            </Container>
+            <Container fluid>
+                <Row>
+                    <Col size="md-12">
+
                         <form>
                             <div className="form-row align-items-center">
                                 <Input
@@ -149,12 +205,15 @@ class Books extends Component {
               </FormBtn>
                             </div>
                         </form>
-
+                        </Col>
+                    </Row>
+                        <Row>
                         <Col size="md-12">
-                            {this.state.googleBooks.length > 0 ? (
+                            {(this.state.googleBooks && this.state.googleBooks) ? (
                                 <div>
                                     <SearchResults
                                         books={this.state.googleBooks}
+                                        savedBooks={this.state.savedBookTitles}
                                         saveBookClick={this.saveBookClick}
                                     >
                                     </SearchResults>
@@ -177,10 +236,23 @@ class Books extends Component {
                                     <div>No Results</div>)
                             }
                         </Col>
-                    </Col>
+                    </Row>
 
-                </Row>
-            </Container>
+                </Container>
+                <div>
+                <Modal
+                    isOpen={this.state.modalIsOpen}
+                    onAfterOpen={this.afterOpenModal}
+                    onRequestClose={this.closeModal}
+                    style={customStyles}
+                    contentLabel={this.state.modalTitle}
+                >
+                    <h2>{this.state.modalTitle}</h2>
+                    <div>{this.state.modalMessage}</div>
+                    <button onClick={this.closeModal}>close</button>
+                    </Modal>
+               </div>
+            </div>
         );
     }
 }

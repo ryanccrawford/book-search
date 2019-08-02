@@ -1,9 +1,9 @@
 import React from "react";
 import DeleteBtn from "../DeleteBtn";
 
-export default function SearchResults(props) {
+export default function SavedResults(props) {
 
-    console.log(props.saveBookClick)
+
     return (
         <div className="container">
             <div className="row mt-4">
@@ -12,7 +12,7 @@ export default function SearchResults(props) {
 
                     return (
 
-                        <div className="card shadow mb-2 col-m3 col-s12"
+                        <div className="card shadow rounded mb-2 col-m3 col-s12"
                             key={book._id}
                         >
                             <div className="card-header">
